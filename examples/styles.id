@@ -1,0 +1,54 @@
+unique:
+    section .data {
+        double byte* message = "Hello World\n"
+        quad word message_length = here - message
+    }
+    section .text {
+        _start {
+            mov(rax, 1)
+            mov(rdi, 1)
+            mov(rsi, message)
+            mov(rdx, message_length)
+            syscall()
+
+            mov(rax, 60)
+            mov(rdi, 0)
+            syscall()
+        }
+    }
+semi-traditional
+    section .data {
+        double byte* message = "Hello World\n"
+        quad word message_length = $ - message
+    }
+    section .text {
+        _start {
+            mov rax, 1
+            mov rdi, 1
+            mov rsi, message
+            mov rdx, message_length
+            syscall
+
+            mov rax, 60
+            mov rdi, 0
+            syscall
+        }
+    }
+mostly-traditional
+    section .data {
+        message: db "Hello World", 10
+        message_length: equ $ - message
+    }
+    section .text {
+        _start {
+            mov rax, 1
+            mov rdi, 1
+            mov rsi, message
+            mov rdx, message_length
+            syscall
+
+            mov rax, 60
+            mov rdi, 0
+            syscall
+        }
+    }

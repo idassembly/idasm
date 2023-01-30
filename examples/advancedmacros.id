@@ -1,0 +1,24 @@
+section .macro {
+    %macro exit {
+        mov rax, 60
+        mov rdi, 0
+        syscall
+    }
+    %macro print str len {
+        mov rax, 1
+        mov rdi, 1
+        mov rsi, #str
+        mov rdx, #len
+        syscall
+    }
+}
+section .data {
+    double byte* message = "Hello World\n"
+    quad word message_length = $ - message
+}
+section .text {
+    _start {
+        @print message, message_length
+        @exit
+    }
+}
