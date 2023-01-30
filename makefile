@@ -1,9 +1,9 @@
-CPPS := $(shell find . -name "*.cpp")
+CC=g++
+CPPFLAGS=-g -O2 -Wall -Wextra -Isrc/include
 
-all: run
+IDASM=idasm
+
+CPPFILES = $(shell find src -type f -name '*.cpp')
 
 build:
-	clang++ -Isrc/ $(CPPS) -o out/idasm
-
-run: build
-	./out/idasm test/test.id test/test 
+	$(CC) $(CPPFLAGS) $(CPPFILES) -o $(IDASM)

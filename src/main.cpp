@@ -1,39 +1,44 @@
-#include <stdio.h>
-#include <iostream>
-#include <fstream>
-#include <string>
-#include <lexer/lexer.h>
+#include <lexer.hpp>
+const char* token_type_str[] = {
+	"LABEL",
+	"OPEN_PARENTHESIS",
+	"CLOSE_PARENTHESIS",
+	"OPEN_CURLY_BRACKET",
+	"CLOSE_CURLY_BRACKET",
+	"KEYWORD",
+	"NUMBER",
+	"STRING",
+	"COMMA",
+	"ASTERISK",
+	"EQUAL",
+	"DOLLAR",
+	"MINUS",
+	"PLUS",
+	"REGISTER64",
+	"REGISTER32",
+	"REGISTER16"
+};
+int main(int argc, char *argv[])
+{
+	if(argc > 1)
+	{
+		std::ifstream asm_input(argv[1]);
+		std::stringstream asm_ss;
+		asm_ss << asm_input.rdbuf();
+		std::string asm_str = asm_ss.str();
 
-using namespace std;
-
-int main(int argc, char** argv) {
-	if (argc < 3) {
-		printf("Not enough arguments.\n"
-			   "Usage: %s <Filename> <Out name>\n", argv[0]);
-		return 1;
+		std::vector<lexer::token> asm_tokens = lexer::lex(asm_str);
+		for(lexer::token& t : asm_tokens)
+		{
+			if(t.data == "\n")
+				std::cout << token_type_str[t.type] << " : " << "\\n" << "\n";
+			else
+				std::cout << token_type_str[t.type] << " : " << t.data << "\n";
+		}
 	}
-
-	ifstream handler;
-	string line;
-	string file;
-
-	handler.open(argv[1]);
-	if (handler.is_open()) {
-		while (getline(handler, line))
-			file += line + '\n';
-		handler.close();
-	} else {
-		printf("Error: Unable to open file %s!\n", argv[1]);
+	else
+	{
+		std::cerr << "Invalid number of arguments: " << argc - 1 << "\n";
 	}
-
-	Lexer::init(file);
-	
-	list<Lexer::Token> tokens = Lexer::lex();
-	printf("%d\n", tokens.size());
-
-	for (auto token : tokens) {
-		printf("%s\n", token.content.data());
-	}
-
 	return 0;
 }
